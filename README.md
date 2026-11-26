@@ -56,7 +56,9 @@ projeto-redes/
 │
 ├── teste_servico_inexistente.py
 ├── resultados_benchmark.csv
-|
+│
+├── aguardar.py
+├── Makefile
 └── README.md
 ```
 
@@ -82,9 +84,30 @@ As configurações podem ser alteradas no arquivo `config.py`.
 
 Não é necessário instalar dependências externas.
 
-### 2. Iniciar os servidores
+### 2. Execução com Makefile (recomendado)
 
-Abra três terminais, na pasta do projeto.
+O `Makefile` sobe os servidores na ordem correta (servidor de nomes → TCP → UDP), esperando cada um ficar pronto antes de iniciar o próximo (via `aguardar.py`). Os servidores rodam em segundo plano e sua saída fica em `logs/`.
+
+```bash
+make servidores     # sobe servidor de nomes, TCP e UDP
+make cliente-tcp    # cliente TCP (interativo)
+make cliente-udp    # cliente UDP (interativo)
+make inexistente    # teste de serviço inexistente
+make benchmark      # comparação TCP x UDP
+make status         # mostra quais servidores estão rodando
+make logs           # mostra a saída dos servidores
+make parar          # encerra os servidores
+```
+
+Também é possível rodar tudo de uma vez (servidores + teste de serviço inexistente + benchmark) com `make demo`.
+
+Para acompanhar cada servidor em um terminal separado (útil para os prints), use `make nomes`, `make tcp` e `make udp`, nessa ordem, cada um em um terminal.
+
+> **Windows:** o Makefile usa comandos de shell do Linux/macOS (`nohup`, `kill`) e não funciona no PowerShell ou no Prompt de Comando. No Windows, use o WSL ou o Git Bash com `make` instalado, ou siga a execução manual abaixo.
+
+### 3. Execução manual (sem Makefile)
+
+Abra três terminais, na pasta do projeto. Em sistemas Linux, use `python3` no lugar de `python`.
 
 **Terminal 1 — Servidor de nomes**
 
@@ -106,7 +129,7 @@ python servidor_udp.py
 
 Os servidores de calculadora realizarão automaticamente o registro de seus serviços no servidor de nomes.
 
-### 3. Executar os clientes
+#### Executar os clientes
 
 Com os três servidores em execução, abra outro terminal.
 
